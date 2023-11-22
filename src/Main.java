@@ -1,4 +1,5 @@
 import java.io.File;
+import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
@@ -16,9 +17,9 @@ public class Main {
 
         // filter the sets into an array
         ArrayList<LegoSet> sets = filterSets(legoSets, filter, themes, 0);
-        System.out.println(sets);
 
         // write the contents to a new CSV file
+        writeSetsToFile(sets, "filtered.csv");
     }
 
     public static ArrayList<LegoSet> parseSetsCSV(String path) {
@@ -68,9 +69,7 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("Please Enter Instructions for Filter:");
-//        String[] filterInstructions = scanner.nextLine().split(",");
-        String[] filterInstructions = {"Theme = Christmas", "Year <= 2000", "Part < 1000"};
-
+        String[] filterInstructions = scanner.nextLine().split(",");
 
         // creates the filter array
         String[][] filter = new String[filterInstructions.length][3];
@@ -118,7 +117,8 @@ public class Main {
         ArrayList<LegoSet> filteredSets = new ArrayList<>();
 
         // recursively loops through the sets, base case: z == filter.length -1
-        if (z == filter.length - 1) {
+        if (z == filter.length) {
+            System.out.println("Ends method");
             return sets;
         } else {
             if (filter[z][0].equalsIgnoreCase("theme")) {
@@ -195,5 +195,24 @@ public class Main {
             }
         }
         return filterSets(filteredSets, filter, themes, ++z);
+    }
+
+    public static void writeSetsToFile(ArrayList<LegoSet> sets, String fileName) {
+        try {
+            FileWriter file = new FileWriter(fileName, false);
+            file.write("set_num,name,year,theme_id,num_parts\n");
+
+            for (LegoSet set : sets) {
+                file.write(set.getSetID() + ",");
+                file.write(set.getName() + ",");
+                file.write(set.getYear() + ",");
+                file.write(set.getThemeID() + ",");
+                file.write(set.getNumOfParts() + "\n");
+            }
+
+            file.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
