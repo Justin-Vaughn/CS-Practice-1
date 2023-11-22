@@ -1,6 +1,5 @@
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Scanner;
 
@@ -16,6 +15,8 @@ public class Main {
         HashMap<String, Integer> themes = parseThemesCSV("themes.csv");
 
         // filter the sets into an array
+        ArrayList<LegoSet> sets = filterSets(legoSets, filter, themes, 0);
+        System.out.println(sets);
 
         // write the contents to a new CSV file
     }
@@ -87,7 +88,7 @@ public class Main {
         HashMap<String, Integer> themes = new HashMap<>();
 
         try {
-            Scanner scanner = new Scanner(new File("themes.csv"));
+            Scanner scanner = new Scanner(new File(path));
             boolean firstLine = true;
 
             while (scanner.hasNext()) {
@@ -102,7 +103,7 @@ public class Main {
                 String themeName = line[1];
                 int themeID = Integer.parseInt(line[0]);
 
-                // skips duplicate themes
+                // adds non-duplicate themes to hashmap
                 themes.putIfAbsent(themeName, themeID);
             }
 
@@ -111,5 +112,88 @@ public class Main {
         }
 
         return themes;
+    }
+
+    public static ArrayList<LegoSet> filterSets(ArrayList<LegoSet> sets, String[][] filter, HashMap<String, Integer> themes, int z) {
+        ArrayList<LegoSet> filteredSets = new ArrayList<>();
+
+        // recursively loops through the sets, base case: z == filter.length -1
+        if (z == filter.length - 1) {
+            return sets;
+        } else {
+            if (filter[z][0].equalsIgnoreCase("theme")) {
+                // filter for theme
+
+                for (LegoSet set : sets) {
+                    if (set.getThemeID() == themes.get(filter[z][2])) {
+                        // the set theme ID matches the theme in the value in HashMap
+                        filteredSets.add(set);
+                    }
+                }
+
+            } else if (filter[z][0].equalsIgnoreCase("year")) {
+                // filter for year
+
+                for (LegoSet set : sets) {
+                    if (filter[z][0].equalsIgnoreCase("<")
+                            && set.getYear() < Integer.parseInt(filter[z][2])) {
+                        // the year is less than given value
+                        filteredSets.add(set);
+
+                    } else if (filter[z][1].equalsIgnoreCase(">")
+                            && set.getYear() > Integer.parseInt(filter[z][2])) {
+                        // the year is greater than given value
+                        filteredSets.add(set);
+
+                    } else if (filter[z][1].equalsIgnoreCase("<=")
+                            && set.getYear() <= Integer.parseInt(filter[z][2])) {
+                        // the year is less than or equal to the given value
+                        filteredSets.add(set);
+
+                    } else if (filter[z][1].equalsIgnoreCase(">=")
+                            && set.getYear() >= Integer.parseInt(filter[z][2])) {
+                        // the year is greater than or equal to the given value
+                        filteredSets.add(set);
+
+                    } else if (filter[z][1].equalsIgnoreCase("=")
+                            && set.getYear() == Integer.parseInt(filter[z][2])) {
+                        // the year is equal than given value
+                        filteredSets.add(set);
+                    }
+                }
+
+            } else if (filter[z][0].equalsIgnoreCase("parts")) {
+                // filter for parts
+
+                for (LegoSet set : sets) {
+                    if (filter[z][1].equalsIgnoreCase("<")
+                            && set.getNumOfParts() < Integer.parseInt(filter[z][2])) {
+                        // the year is less than given value
+                        filteredSets.add(set);
+
+                    } else if (filter[z][1].equalsIgnoreCase(">")
+                            && set.getNumOfParts() > Integer.parseInt(filter[z][2])) {
+                        // the year is greater than given value
+                        filteredSets.add(set);
+
+                    } else if (filter[z][1].equalsIgnoreCase("<=")
+                            && set.getNumOfParts() <= Integer.parseInt(filter[z][2])) {
+                        // the year is less than or equal to the given value
+                        filteredSets.add(set);
+
+                    } else if (filter[z][1].equalsIgnoreCase(">=")
+                            && set.getNumOfParts() >= Integer.parseInt(filter[z][2])) {
+                        // the year is greater than or equal to the given value
+                        filteredSets.add(set);
+
+                    } else if (filter[z][1].equalsIgnoreCase("=")
+                            && set.getNumOfParts() == Integer.parseInt(filter[z][2])) {
+                        // the year is equal than given value
+                        filteredSets.add(set);
+                    }
+                }
+            }
+        }
+        return filterSets(filteredSets, filter, themes, ++z);
     }
 }
