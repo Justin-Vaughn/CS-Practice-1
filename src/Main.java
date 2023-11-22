@@ -1,6 +1,7 @@
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Scanner;
 
 public class Main {
@@ -11,7 +12,12 @@ public class Main {
         // parses the instructions to filter
         String[][] filter = filterInstructions();
 
+        // parse the themes into a HashMap
+        HashMap<String, Integer> themes = parseThemesCSV("themes.csv");
 
+        // filter the sets into an array
+
+        // write the contents to a new CSV file
     }
 
     public static ArrayList<LegoSet> parseSetsCSV(String path) {
@@ -26,16 +32,15 @@ public class Main {
 
             // loops each line of the file
             while (scanner.hasNext()) {
-                String line = scanner.nextLine();
+
+                // creates an array from the row in the CSV file
+                String[] legoSetRaw = scanner.nextLine().split(",");
 
                 // ignore first line of the CSV file
                 if (isFirstLine) {
                     isFirstLine = false;
                     continue;
                 }
-
-                // creates an array from the row in the CSV file
-                String[] legoSetRaw = line.split(",");
 
                 // skip if there are improper commas in the row
                 if (legoSetRaw.length != 5) continue;
@@ -76,5 +81,35 @@ public class Main {
         }
 
         return filter;
+    }
+
+    public static HashMap<String, Integer> parseThemesCSV(String path) {
+        HashMap<String, Integer> themes = new HashMap<>();
+
+        try {
+            Scanner scanner = new Scanner(new File("themes.csv"));
+            boolean firstLine = true;
+
+            while (scanner.hasNext()) {
+                String[] line = scanner.nextLine().split(",");
+
+                // skips first line of CSV file
+                if (firstLine) {
+                    firstLine = false;
+                    continue;
+                }
+
+                String themeName = line[1];
+                int themeID = Integer.parseInt(line[0]);
+
+                // skips duplicate themes
+                themes.putIfAbsent(themeName, themeID);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return themes;
     }
 }
