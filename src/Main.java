@@ -9,7 +9,9 @@ public class Main {
         ArrayList<LegoSet> legoSets = parseSetsCSV("sets.csv");
 
         // parses the instructions to filter
-        requestInstructions(legoSets);
+        String[][] filter = filterInstructions();
+
+
     }
 
     public static ArrayList<LegoSet> parseSetsCSV(String path) {
@@ -56,14 +58,23 @@ public class Main {
         return legoSets;
     }
 
-    public static ArrayList<String[]> requestInstructions(ArrayList<LegoSet> sets) {
+    public static String[][] filterInstructions() {
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("Please Enter Instructions for Filter:");
 //        String[] filterInstructions = scanner.nextLine().split(",");
-        String[] filterInstructions = {"Theme=Christmas", "Year<=2000", "Part<1000"};
+        String[] filterInstructions = {"Theme = Christmas", "Year <= 2000", "Part < 1000"};
 
-        System.out.println(Arrays.toString(filterInstructions));
 
+        // creates the filter array
+        String[][] filter = new String[filterInstructions.length][3];
+
+        // loops to fill each filter array from the instructions
+        for (int i = 0; i < filterInstructions.length; i++) {
+
+            filter[i] = filterInstructions[i].split(" ");
+        }
+
+        return filter;
     }
 }
