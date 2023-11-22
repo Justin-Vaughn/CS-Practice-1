@@ -5,27 +5,40 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
+        // creates the ArrayList for the lego sets
+        ArrayList<LegoSet> legoSets = parseSetsCSV("sets.csv");
+
+        // parses the instructions to filter
+        requestInstructions(legoSets);
+    }
+
+    public static ArrayList<LegoSet> parseSetsCSV(String path) {
+        // creates ArrayList data structure to store the lego sets
         ArrayList<LegoSet> legoSets = new ArrayList<>();
 
         try {
-            Scanner scanner = new Scanner(new File("sets.csv"));
+            // creates a Scanner object from the file
+            Scanner scanner = new Scanner(new File(path));
 
             boolean isFirstLine = true;
 
+            // loops each line of the file
             while (scanner.hasNext()) {
                 String line = scanner.nextLine();
 
-                if (isFirstLine) {   // ignore first line
+                // ignore first line of the CSV file
+                if (isFirstLine) {
                     isFirstLine = false;
                     continue;
                 }
 
+                // creates an array from the row in the CSV file
                 String[] legoSetRaw = line.split(",");
 
-                if (legoSetRaw.length != 5) {
-                    continue;
-                }
+                // skip if there are improper commas in the row
+                if (legoSetRaw.length != 5) continue;
 
+                // creates the object from the CSV row
                 LegoSet set =
                         new LegoSet(
                                 legoSetRaw[0],
@@ -34,56 +47,23 @@ public class Main {
                                 Integer.parseInt(legoSetRaw[3]),
                                 Integer.parseInt(legoSetRaw[4])
                         );
+                // adds the object to the lego set ArrayList
                 legoSets.add(set);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return legoSets;
+    }
 
-        Scanner scanner2 = new Scanner(System.in);
-        System.out.println("What do you want to filter? [Year | Theme | Parts]:");
-        String filterType = scanner2.nextLine();
+    public static ArrayList<String[]> requestInstructions(ArrayList<LegoSet> sets) {
+        Scanner scanner = new Scanner(System.in);
 
-        System.out.println("Enter an inequality [\"less\" | \"equals\" | \"more\"]:");
-        String inequality = scanner2.nextLine();
+        System.out.println("Please Enter Instructions for Filter:");
+//        String[] filterInstructions = scanner.nextLine().split(",");
+        String[] filterInstructions = {"Theme=Christmas", "Year<=2000", "Part<1000"};
 
-        System.out.println("Enter a range for the inequality");
-        int range = scanner2.nextInt();
+        System.out.println(Arrays.toString(filterInstructions));
 
-        for (LegoSet legoSet : legoSets) {
-            if (filterType.equalsIgnoreCase("year")) {
-                if (inequality.equalsIgnoreCase("less")) {
-                    if (legoSet.getYear() < range) {
-                        System.out.println(legoSet);
-                    }
-                } else if (inequality.equalsIgnoreCase("equals")) {
-                    if (legoSet.getYear() == range) {
-                        System.out.println(legoSet);
-                    }
-                } else if (inequality.equalsIgnoreCase("more")) {
-                    if (legoSet.getYear() > range) {
-                        System.out.println(legoSet);
-                    }
-                }
-
-            } else if (filterType.equalsIgnoreCase("theme")) {
-                // add later
-
-            } else if (filterType.equalsIgnoreCase("parts")) {
-                if (inequality.equalsIgnoreCase("less")) {
-                    if (legoSet.getNumOfParts() < range) {
-                        System.out.println(legoSet);
-                    }
-                } else if (inequality.equalsIgnoreCase("equals")) {
-                    if (legoSet.getNumOfParts() == range) {
-                        System.out.println(legoSet);
-                    }
-                } else if (inequality.equalsIgnoreCase("more")) {
-                    if (legoSet.getNumOfParts() > range) {
-                        System.out.println(legoSet);
-                    }
-                }
-            }
-        }
     }
 }
