@@ -22,6 +22,9 @@ public class Main {
         writeSetsToFile(sets, "filtered.csv");
     }
 
+    // TODO  change the method declaration to a throws and put the try catch in the main method
+    // TODO make more general for any CSV, change the hardcoded 5 to count the num of cols
+    // TODO change method declaration to have a throws and add a try catch to the main method
     public static ArrayList<LegoSet> parseSetsCSV(String path) {
         // creates ArrayList data structure to store the lego sets
         ArrayList<LegoSet> legoSets = new ArrayList<>();
@@ -83,6 +86,7 @@ public class Main {
         return filter;
     }
 
+    // TODO return more generic type (Map or List), make generalized for any CSV file
     public static HashMap<String, Integer> parseThemesCSV(String path) {
         HashMap<String, Integer> themes = new HashMap<>();
 
@@ -113,6 +117,8 @@ public class Main {
         return themes;
     }
 
+    // TODO change z to more specific type, make returns more generic (List or Map), make filter for any CSV type
+    // TODO for parsing int/string/float make a method that attempts to parse all or return string if unsuccessful
     public static ArrayList<LegoSet> filterSets(ArrayList<LegoSet> sets, String[][] filter, HashMap<String, Integer> themes, int z) {
         ArrayList<LegoSet> filteredSets = new ArrayList<>();
 
